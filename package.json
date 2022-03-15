@@ -1,0 +1,49 @@
+{
+  "name": "mybtllc",
+  "version": "1.0.0",
+  "description": "Child games to learn basics",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "REST",
+    "APIs",
+    "for",
+    "MybtLLC",
+    "App"
+  ],
+  "author": "Qaiser Abbas",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "bee-queue": "^1.3.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "email-templates": "^8.0.3",
+    "express": "^4.17.1",
+    "joi": "^17.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "mongoose": "^5.11.15",
+    "mongoose-paginate-v2": "^1.3.14",
+    "nodemailer": "^6.4.18",
+    "nodemon": "^2.0.7",
+    "pug": "^3.0.0",
+    "redis": "^2.8.0"
+  },
+  "_moduleAliases": {
+    "@Config": "src/Config",
+    "@Controllers": "src/Controllers",
+    "@Models": "src/Models",
+    "@Shared": "src/Shared",
+    "@Routes": "src/Routes",
+    "@Formators": "src/Formators",
+    "@Middlewares": "src/Middlewares",
+    "@Utils": "src/Utils",
+    "@Validators": "src/Validators",
+    "@Jobs": "src/Jobs",
+    "@Providers": "src/Providers"
+  }
+}

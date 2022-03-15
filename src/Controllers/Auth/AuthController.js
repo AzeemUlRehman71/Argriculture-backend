@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken');
 // const Joi = require('@hapi/joi');
 const User = require('@Models/User');
 const Response = require('@Formators/ApiResponseFormator');
-const {checkPassword} = require('@Utils/CheckPassword');
+const { checkPassword } = require('@Utils/CheckPassword');
 const EmailQue = require('@Jobs/EmailQue');
+const UserRole = require('@Models/UserRole');
 
 module.exports = {
 
@@ -13,7 +14,7 @@ module.exports = {
                 email, password
             } = req.body;
             const device = req.body.device !== 'iphone' ? 'android' : 'iphone';
-            let user = await User.findOne({'email': email}).select('+password');
+            let user = await User.findOne({ 'email': email }).select('+password');
             if (user) {
                 const isPasswordMatch = await checkPassword(res, password, user)
                 if (!isPasswordMatch) {
@@ -39,7 +40,14 @@ module.exports = {
     },
     async register(req, res) {
         try {
+            const { roleIds } = req.body;
             const user = await User.register(req.body);
+            for (const role of roleIds) {
+                await UserRole.add({
+                    user: user._id,
+                    role: role
+                })
+            }
             EmailQue.enqueue(user.email, 'register', {
                 name: user.name,
                 link: `http://localhost:4000/api/v1/auth/verify/${user._id}`
@@ -60,12 +68,12 @@ module.exports = {
     async verify(req, res) {
         try {
             console.log('in verify funct', req.params)
-            const {userId} = req.params
+            const { userId } = req.params
             console.log('userId', userId)
-            const user = await User.findOne({'_id': userId})
+            const user = await User.findOne({ '_id': userId })
             user.verifiedAt = new Date();
             await user.save();
-            res.render("verification_success", {user});
+            res.render("verification_success", { user });
             //Response.successMsg(res, 4, user)
         } catch (e) {
             Response.serverErr(res, 1, e.message, {});

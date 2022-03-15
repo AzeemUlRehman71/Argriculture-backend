@@ -1,4 +1,5 @@
 const successList = []
+successList[0] = 'Operation successfully executed!';
 successList[1] = 'Logged in successfully.';
 successList[2] = 'Congratulation! Registration process is successfull. Shortly you will recieve an email for verification. Please verify to continue.';
 successList[3] = 'Users List.';
@@ -11,9 +12,8 @@ successList[9] = 'Session updated successfully.';
 successList[10] = 'Session List.';
 successList[11] = 'User successfully deleted';
 
-
 module.exports = {
-  messageByCode(code){
-    return successList[code] && successList[code].length != ''  ? successList[code] : '';
+  messageByCode(code) {
+    return successList[code] && successList[code].length != '' ? successList[code] : '';
   }
 };

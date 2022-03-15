@@ -14,7 +14,7 @@ function mongoId(joi) {
                 if (ObjectId.isValid(value)) {
                     return value;
                 } else {
-                    return this.createError('string.mongoId', {value}, state, options);
+                    return this.createError('string.mongoId', { value }, state, options);
                 }
             }
         }]
@@ -31,7 +31,8 @@ const schemas = {
     register: Joi.object().keys({
         name: Joi.string().min(3).required(),
         email: Joi.string().required().email(),
-        password: Joi.string().min(8).required()
+        password: Joi.string().min(8).required(),
+        roleIds: Joi.array().items().optional()
     }),
     userList: Joi.object().keys({
         name: Joi.string(),

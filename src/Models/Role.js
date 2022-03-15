@@ -1,30 +1,3 @@
-
-module.exports = {
-  tableName: "roles",
-  created_at: true,
-  updated_at: true,
-  deleted_at: true,
-  attributes: {
-    id: {
-      type: "number",
-      columnType: "integer",
-      required: false,
-      autoIncrement: true,
-    },
-    name: {
-      type: "string",
-      required: false,
-      columnType: "varchar(45)",
-      allowNull: true
-    },
-    disabled: {
-      type: "boolean",
-      defaultsTo: false
-    },
-  },
-};
-
-
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
 
@@ -45,22 +18,22 @@ const RoleSchema = new mongoose.Schema(
 )
 
 
-RoleSchema.statics.add =  async function (req) {
+RoleSchema.statics.add = async function (req) {
   const Role = mongoose.model('Role', RoleSchema);
   const role = new Role();
   console.log('role in modal', role)
   const { name } = req;
-  
+
   role.name = name;
   await role.save();
   return role;
 }
 
-RoleSchema.statics.update =  async function (req, id) {
+RoleSchema.statics.update = async function (req, id) {
   const Role = mongoose.model('Role', RoleSchema);
   const role = await Role.findById(id)
   const { name } = req;
-  
+
   role.name = name;
   await role.save();
   return role;
@@ -93,18 +66,18 @@ RoleSchema.statics.list = async function (filter, data) {
 
   allStages.push(stageSort);
 
-  const skipRecord = page > 0 ? ( ( page - 1 ) * nPerPage ) : 0;
+  const skipRecord = page > 0 ? ((page - 1) * nPerPage) : 0;
   const stagePaginate = {
     $facet: {
-      metadata: [ { $count: "total" } ],
-      docs: [ { $skip: skipRecord }, { $limit: nPerPage } ]
+      metadata: [{ $count: "total" }],
+      docs: [{ $skip: skipRecord }, { $limit: nPerPage }]
     }
   }
   allStages.push(stagePaginate)
 
   const stageResult = {
     $project: {
-      metadata: {$arrayElemAt:["$metadata",0]},
+      metadata: { $arrayElemAt: ["$metadata", 0] },
       docs: "$docs"
     }
   }
@@ -114,19 +87,19 @@ RoleSchema.statics.list = async function (filter, data) {
   try {
 
     const roleList = await Role.aggregate(allStages)
-    let {0: obj} = roleList,
-    {
-      docs = [],
-      metadata = {}
-    } = obj;
+    let { 0: obj } = roleList,
+      {
+        docs = [],
+        metadata = {}
+      } = obj;
     const total = metadata.total || 0;
     let totalPages = 0;
-    if(total <= 10 && total > 0){
+    if (total <= 10 && total > 0) {
       totalPages = 1
     }
 
-    if(total > 10){
-      totalPages = Math.ceil(total/nPerPage)
+    if (total > 10) {
+      totalPages = Math.ceil(total / nPerPage)
     }
 
     return {
@@ -144,5 +117,5 @@ RoleSchema.statics.list = async function (filter, data) {
   }
 };
 RoleSchema.plugin(mongoosePaginate)
-const Role =  mongoose.model('Role', RoleSchema)
+const Role = mongoose.model('Role', RoleSchema)
 module.exports = Role;

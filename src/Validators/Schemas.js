@@ -32,7 +32,7 @@ const schemas = {
         name: Joi.string().min(3).required(),
         email: Joi.string().required().email(),
         password: Joi.string().min(8).required(),
-        roleIds: Joi.array().items().optional()
+        role: Joi.string().required(),
     }),
     userList: Joi.object().keys({
         name: Joi.string(),

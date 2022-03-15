@@ -25,9 +25,9 @@ const UserSchema = new mongoose.Schema(
             select: false
         },
         role: {
-            type: String,
-            enum: ['user', 'admin'],
-            default: 'user'
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'roles',
+            required: true
         },
         isFreeTrialAvailed: {
             type: Boolean,
@@ -90,16 +90,17 @@ UserSchema.methods.comparePassword = function (passwordAttempt, user, cb) {
 UserSchema.statics.register = async function (req) {
     const User = mongoose.model('User', UserSchema);
     const user = new User();
-    const {name, email, password} = req
+    const { name, email, password, role } = req
 
     user.name = name
     user.email = email
     user.password = password
+    user.role = role
     await user.save();
     return user;
 }
 UserSchema.statics.list = async function (filter, data) {
-    const {page = 1, nPerPage = 10} = data;
+    const { page = 1, nPerPage = 10 } = data;
     let allStages = [];
     const stageMatch = {
         $match: filter
@@ -112,7 +113,7 @@ UserSchema.statics.list = async function (filter, data) {
             _id: 1,
             name: 1,
             email: 1,
-            role:1,
+            role: 1,
             createdAt: 1
 
         }
@@ -131,15 +132,15 @@ UserSchema.statics.list = async function (filter, data) {
     const skipRecord = page > 0 ? ((page - 1) * nPerPage) : 0;
     const stagePaginate = {
         $facet: {
-            metadata: [{$count: "total"}],
-            docs: [{$skip: skipRecord}, {$limit: nPerPage}]
+            metadata: [{ $count: "total" }],
+            docs: [{ $skip: skipRecord }, { $limit: nPerPage }]
         }
     }
     allStages.push(stagePaginate)
 
     const stageResult = {
         $project: {
-            metadata: {$arrayElemAt: ["$metadata", 0]},
+            metadata: { $arrayElemAt: ["$metadata", 0] },
             docs: "$docs"
         }
     }
@@ -149,7 +150,7 @@ UserSchema.statics.list = async function (filter, data) {
     try {
 
         const userList = await User.aggregate(allStages)
-        let {0: obj} = userList,
+        let { 0: obj } = userList,
             {
                 docs = [],
                 metadata = {}

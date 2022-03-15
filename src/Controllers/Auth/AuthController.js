@@ -4,7 +4,6 @@ const User = require('@Models/User');
 const Response = require('@Formators/ApiResponseFormator');
 const { checkPassword } = require('@Utils/CheckPassword');
 const EmailQue = require('@Jobs/EmailQue');
-const UserRole = require('@Models/UserRole');
 
 module.exports = {
 
@@ -42,12 +41,6 @@ module.exports = {
         try {
             const { roleIds } = req.body;
             const user = await User.register(req.body);
-            for (const role of roleIds) {
-                await UserRole.add({
-                    user: user._id,
-                    role: role
-                })
-            }
             EmailQue.enqueue(user.email, 'register', {
                 name: user.name,
                 link: `http://localhost:4000/api/v1/auth/verify/${user._id}`
@@ -58,6 +51,7 @@ module.exports = {
                     userId: user._id,
                     name: user.name,
                     email: user.email,
+                    roleId: user.role
                 }, process.env.JWT_SECRET)
 
             })

@@ -39,7 +39,6 @@ module.exports = {
     },
     async register(req, res) {
         try {
-            const { roleIds } = req.body;
             const user = await User.register(req.body);
             EmailQue.enqueue(user.email, 'register', {
                 name: user.name,

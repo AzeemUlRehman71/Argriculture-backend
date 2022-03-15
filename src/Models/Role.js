@@ -11,6 +11,11 @@ const RoleSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    code: {
+      type: String,
+      required: true,
+      unique: true
+    },
   },
   {
     timestamps: true
@@ -22,9 +27,10 @@ RoleSchema.statics.add = async function (req) {
   const Role = mongoose.model('Role', RoleSchema);
   const role = new Role();
   console.log('role in modal', role)
-  const { name } = req;
+  const { name, code } = req;
 
   role.name = name;
+  role.code = code;
   await role.save();
   return role;
 }
@@ -32,9 +38,10 @@ RoleSchema.statics.add = async function (req) {
 RoleSchema.statics.update = async function (req, id) {
   const Role = mongoose.model('Role', RoleSchema);
   const role = await Role.findById(id)
-  const { name } = req;
+  const { name, code } = req;
 
   role.name = name;
+  role.code = code;
   await role.save();
   return role;
 }
